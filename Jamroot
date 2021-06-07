@@ -1,0 +1,37 @@
+# Copyright Stefan Seefeld 2016.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+import python ;
+
+if ! [ python.configured ]
+{
+  ECHO "warning: no Python configured in user-config.jam" ;
+  ECHO "warning: will use default configuration" ;
+  using python ;
+}
+
+# Adjust the following if Boost.Python isn't installed in a default location
+lib boost_python38 ;
+
+project
+  : requirements
+    <include>/home/philoy/boost
+    <library>boost_python38
+    <library-path>/home/philoy/boost/stage/lib
+;
+
+rule run-test ( test-name : sources + )
+{
+  import testing ;
+  testing.make-test run-pyd : $(sources) : : $(test-name) ;
+}
+
+build-project eventloop ;
+# build-project quickstart ;
+# build-project tutorial ;
+if [ python.numpy ]
+{
+  build-project numpy ;
+}
